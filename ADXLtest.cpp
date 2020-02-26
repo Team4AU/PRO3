@@ -95,6 +95,10 @@ BOOST_AUTO_TEST_CASE(ADXL345TestWriteXYZ) {
 	const short X = 16.99;
 	const short Y = 11.44;
 	const short Z = 0.11;
+	const unsigned int BUS = 2;
+	const unsigned int ADDR = 0x53;
+
+	ADXL345 sensor(1,BUS, ADDR);
 
 	output_test_stream output;
     BOOST_CHECK(sensor.WriteDataToFile(output,x,y,z) == 0);
@@ -110,7 +114,7 @@ BOOST_AUTO_TEST_CASE(ADXL345TestOpenCloseFile) {
         const unsigned int BUS = 2;
         const unsigned int ADDR = 0x53;
 
-        ADXL345 sensor(BUS, ADDR);
+        ADXL345 sensor(1, BUS, ADDR);
 		
         BOOST_REQUIRE(sensor.OpenOutFile()==0); //Open file
         ifstream ifile(OUT_FILE);
