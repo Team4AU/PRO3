@@ -105,7 +105,7 @@ public:
 	int WriteDataToFile(ostream os, short x, short y, short z);
 	int OpenOutFile() override;
 	int CloseOutFile() override;
-	int ReadSensorState() override;
+	int ReadSensorState(int samples) override;
 
 private:
 	short combineRegisters(unsigned char msb, unsigned char lsb);

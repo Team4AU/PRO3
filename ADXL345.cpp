@@ -11,7 +11,7 @@
 #include "ADXL345.h"
 
 /**
-* @breif Constructor for the ADXL345 class. It requires the bus nr. and device Id.
+* @brief Constructor for the ADXL345 class. It requires the bus nr. and device Id.
 * @param bus The bus number. Usually 0 or 1 on the BBB
 * @param address The device ID on the bus.
  */
@@ -33,13 +33,14 @@ ADXL345::ADXL345(unsigned int bus, unsigned int address) :
 
 }
 
+
 ADXL345::~ADXL345()
 {
 	// TODO Auto-generated destructor stub
 }
 
 /**
- * @breif combining two 8-bit registers.
+ * @brief combining two 8-bit registers.
  * @param msb an unsigned character that contains the most significant byte
  * @param lsb an unsigned character that contains the least significant byte
  */
@@ -48,7 +49,7 @@ short ADXL345::combineRegisters(unsigned char msb, unsigned char lsb) {
 	return ((short)msb << 8) | (short)lsb;
 }
 /**
- *  @breif used to update the DATA_FORMAT register
+ *  @brief used to update the DATA_FORMAT register
  * @return 0 if the register is updated successfully and 1 on failure
  */
 int ADXL345::updateRegisters() {
@@ -61,7 +62,7 @@ int ADXL345::updateRegisters() {
 }
 
 /**
- * @breif sets range on ADXL345 register 0x31
+ * @brief sets range on ADXL345 register 0x31
  * @return 0 on success and 1 on failure
  */
 
@@ -76,7 +77,7 @@ int ADXL345::setRange(ADXL345::RANGE range)
 }
 
 /**
- * @breif sets resolution on ADXL345 register 0x31
+ * @brief sets resolution on ADXL345 register 0x31
  * @return 0 on success and 1 on failure
  */
 int ADXL345::setResolution(ADXL345::RESOLUTION resulution)
@@ -90,7 +91,7 @@ int ADXL345::setResolution(ADXL345::RESOLUTION resulution)
 }
 
 /**
- * @breif sets baud rate on ADXL345 register 0x2C
+ * @brief sets baud rate on ADXL345 register 0x2C
  * @return 0 on success and 1 on failure
  */
 int ADXL345::setBWrate(ADXL345::BAUD baud)
@@ -104,25 +105,42 @@ int ADXL345::setBWrate(ADXL345::BAUD baud)
 
 }
 /**
- * @breif Reads sensor state, by reading register 0x32-0x37 and combining 2 registers
- * @return 0 if the registers are successfully read and -1 if the device ID is incorrect.
+ * @brief Reads sensor state, by reading register 0x32-0x37 and combining 2 registers
+ * @param samples int number of successive reads
+ * @return 0 if the registers are successfully read and -1 if error occurrs.
  */
-int ADXL345::ReadSensorState() {
-	this->registers = this->readRegisters(BUFFER_SIZE, 0x00);
-	if (*this->registers != 0xe5) {
-		perror("ADXL345: Failure Condition - Sensor ID not Verified");
+int ADXL345::ReadSensorState(int samples) {
+	//open file here..
+	if (OpenOutFile()) {
+		perror("ADXL345: Failed open file");
 		return -1;
 	}
-	this->accelX = this->combineRegisters(*(registers + DATAX1), *(registers + DATAX0));
-	this->accelY = this->combineRegisters(*(registers + DATAY1), *(registers + DATAY0));
-	this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
-	this->resolution = (ADXL345::RESOLUTION) (((*(registers + DATA_FORMAT)) & 0x08) >> 3);
-	this->range = (ADXL345::RANGE) ((*(registers + DATA_FORMAT)) & 0x03);
+
+	for (int i = 0; i < samples;i++) {
+		this->registers = this->readRegisters(BUFFER_SIZE, 0x00);
+		if (*this->registers != 0xe5) {
+			perror("ADXL345: Failure Condition - Sensor ID not Verified");
+			return -1;
+		}
+		this->accelX = this->combineRegisters(*(registers + DATAX1), *(registers + DATAX0));
+		this->accelY = this->combineRegisters(*(registers + DATAY1), *(registers + DATAY0));
+		this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
+		this->resolution = (ADXL345::RESOLUTION) (((*(registers + DATA_FORMAT)) & 0x08) >> 3);
+		this->range = (ADXL345::RANGE) ((*(registers + DATA_FORMAT)) & 0x03);
+		if (WriteDataToFile(this->accelX, this->accelY, this->accelZ)) {
+			perror("ADXL345: Failed write X, Y & Z to file");
+			return -1;
+		}
+	}
+	if (CloseOutFile()) {
+		perror("ADXL345: Failed close out file");
+		return 1;
+	}
 	return 0;
 }
 
 /**
- * @breif Opens or creates output file, truncates existing file and writes
+ * @brief Opens or creates output file, truncates existing file and writes
  * header
  * @return 0 if the file is opened correctly
  */
@@ -134,12 +152,12 @@ int ADXL345::OpenOutFile() {
 	}
 
 	//write header for file
-	this->outFile << "x,y,z" << endl;
+	this->outFile << "x,y,z\n" << endl;
 	return 0;
 }
 
 /**
- * @breif Close output file
+ * @brief Close output file
  * @return 0 if file is closed
  */
 int ADXL345::CloseOutFile() {
@@ -156,8 +174,11 @@ int ADXL345::CloseOutFile() {
 }
 
 /**
- * @breif Writes X, Y and Z data to output file
+ * @brief Writes X, Y and Z data to output file
  * @return 0 if write is successful
+ * @param x short
+ * @param y short
+ * @param z short
  */
 int ADXL345::WriteDataToFile(short x, short y, short z) {
 	//write line to output file
@@ -173,6 +194,10 @@ int ADXL345::WriteDataToFile(short x, short y, short z) {
 	return 0;
 }
 
+/**
+ * @brief Writes X, Y and Z data to output file
+ * @return 0 if write is successful
+ */
 int ADXL345::WriteDataToFile(ostream os, short x, short y, short z) {
 	//function for testing write funcktion - boost variant
 	if (os) {
