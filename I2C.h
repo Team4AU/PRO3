@@ -27,6 +27,8 @@
 #define BBB_I2C_1 "/dev/i2c-1"
 #define BBB_I2C_2 "/dev/i2c-2"
 
+#define HEX(x) setw(2) << setfill('0') << hex << (int)(x)
+
 using namespace std;
 
 /**
