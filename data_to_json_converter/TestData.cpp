@@ -32,10 +32,10 @@ TestData::~TestData ( )
 
 string TestData::ToString ( )
 {
-	float samples = Setup.sampleFrequency
-	    * ((Setup.stepTimems * Setup.steps) / 1000);
-	int sample = int (samples);
-	SensorData Data[sample];
+	int samples = (float)Setup.sampleFrequency
+	    * (((float)Setup.stepTimems * (float)Setup.steps) / 1000);
+
+	SensorData Data[samples];
 
 	//int j = 0;
 	ifstream myfile (MY_FILE);
@@ -94,10 +94,10 @@ string TestData::ToString ( )
 	myfile.close ();
 
 	string SID = to_string (Setup.sensorID);
-	string Steps = to_string ((int) Setup.steps);
-	string StepTime = to_string ((int) Setup.stepTimems);
+	string Steps = to_string (Setup.steps);
+	string StepTime = to_string (Setup.stepTimems);
 	string StepSize = to_string (Setup.stepSize);
-	string fs = to_string ((int) Setup.sampleFrequency);
+	string fs = to_string (Setup.sampleFrequency);
 
 	string s = "\t\"parameterObj\": {\n\t\t";
 	s.append ("\"Setup\": {\n\t\t\t");
