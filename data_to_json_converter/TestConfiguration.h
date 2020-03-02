@@ -12,12 +12,12 @@ class TestConfiguration
 {
 	public:
 		int sensorID;
-		float steps;
-		float stepTimems;
+		int steps;
+		int stepTimems;
 		int stepSize;
-		float sampleFrequency;
+		int sampleFrequency;
 		TestConfiguration ( );
-		TestConfiguration (int SID, int steps, float steptimems, float stepsize, float fs);
+		TestConfiguration (int SID, int steps, int steptimems, int stepsize, int fs);
 		virtual ~TestConfiguration ( );
 };
 
