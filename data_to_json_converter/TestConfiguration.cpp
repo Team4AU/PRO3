@@ -29,7 +29,7 @@ TestConfiguration::TestConfiguration ( )
 
 }
 
-TestConfiguration::TestConfiguration (int SID, int steps, float steptimems, float stepsize, float fs)
+TestConfiguration::TestConfiguration (int SID, int steps, int steptimems, int stepsize, int fs)
 {
 	/*
 	 * Predefined parameters for testing
