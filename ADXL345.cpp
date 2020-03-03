@@ -17,7 +17,7 @@
  */
 
 ADXL345::ADXL345(unsigned int bus, unsigned int address) :
-	I2C(I2CBus, I2CAddress)
+	I2C(bus, address)
 {
 	this->I2CAddress = address;
 	this->I2CBus = bus;
@@ -29,7 +29,9 @@ ADXL345::ADXL345(unsigned int bus, unsigned int address) :
 	this->resolution = ADXL345::HIGH;
 	this->baud = ADXL345::BANDWITH_1600_Hz;
 	this->writeRegister(BW_RATE, 0x0f);
+	this->writeRegister(POWER_CTL, 0x08);
 	this->updateRegisters();
+	this->olddata = new unsigned char[DATALEN];
 
 }
 
@@ -37,6 +39,7 @@ ADXL345::ADXL345(unsigned int bus, unsigned int address) :
 ADXL345::~ADXL345()
 {
 	// TODO Auto-generated destructor stub
+	delete(olddata);
 }
 
 /**
@@ -122,6 +125,12 @@ int ADXL345::ReadSensorState(int samples) {
 			perror("ADXL345: Failure Condition - Sensor ID not Verified");
 			return -1;
 		}
+		//checks if data is the same as before. Registers start at the first data register
+		if ((memcmp (olddata, registers + DATAX0, DATALEN)) == 0) {
+			i--;
+		}
+		else {
+
 		this->accelX = this->combineRegisters(*(registers + DATAX1), *(registers + DATAX0));
 		this->accelY = this->combineRegisters(*(registers + DATAY1), *(registers + DATAY0));
 		this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
@@ -130,6 +139,9 @@ int ADXL345::ReadSensorState(int samples) {
 		if (WriteDataToFile(this->accelX, this->accelY, this->accelZ)) {
 			perror("ADXL345: Failed write X, Y & Z to file");
 			return -1;
+		}
+		//sets new data to old data. Register starts at first data register
+		memcpy(olddata,registers+DATAX0,DATALEN);
 		}
 	}
 	if (CloseOutFile()) {
