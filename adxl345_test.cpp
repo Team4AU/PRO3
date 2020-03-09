@@ -24,16 +24,8 @@ int main(int argc, char **argv) {
 	sensor.setRange(ADXL345::PLUSMINUS_16_G);
 	sensor.setBWrate(ADXL345::BANDWITH_50_Hz);
 
-	if((sensor.OpenOutFile()) == 1)  {
-		cout<<"couldn't open file"<<endl;
-	return -1;
-	}
-	sensor.ReadSensorState(SAMPLES);
+sensor.ReadSensorState(SAMPLES);
 
-	if((sensor.CloseOutFile()) == 1) {
-		cout<<"couldn't close file"<<endl;
-		return -2;
-	}
 
 
 	return 0;
