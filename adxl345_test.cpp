@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define SAMPLES 2000
+#define SAMPLES 600
 using namespace std;
 
 int main(int argc, char **argv) {
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	ADXL345 sensor(1,0x53);
 	sensor.setResolution(ADXL345::HIGH);
 	sensor.setRange(ADXL345::PLUSMINUS_16_G);
-	sensor.setBWrate(ADXL345::BANDWITH_200_Hz);
+	sensor.setBWrate(ADXL345::BANDWITH_50_Hz);
 
 	if((sensor.OpenOutFile()) == 1)  {
 		cout<<"couldn't open file"<<endl;
@@ -39,4 +39,3 @@ int main(int argc, char **argv) {
 	return 0;
 
 }
-
