@@ -1,0 +1,9 @@
+	"parameterObj": {
+		"Setup": {
+			"SensorID": 1,
+			"Steps": 5,
+			"StepTimems": 20,
+			"StepSize": 100,
+			"SampleFrequency": 150
+		},
+	},
