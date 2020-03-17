@@ -295,7 +295,7 @@ short KX224::combineRegisters(unsigned char msb, unsigned char lsb) {
  * @return
  */
 int KX224::setPC1(KX224::KX224_OPERATION operation) {
-    char data_format = 0x00;
+    unsigned char data_format = 0x00;
     //Full_resolution is the 7th LSB
     data_format = data_format | ((this->resolution) << 7);
     data_format = data_format | (this->range << 5); // 5th and 6th LSB

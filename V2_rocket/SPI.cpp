@@ -58,12 +58,14 @@ SPI::~SPI() {
  */
 unsigned char *
 SPI::readRegisters(unsigned int length, unsigned int FromAddress) {
-    unsigned char* data = new unsigned char[number];
-    unsigned char send[number+1], receive[number+1];
+    unsigned char* data = new unsigned char[length];
+    unsigned char send[length +1], receive[length +1];
     memset(send, 0, sizeof send);
     send[0] =  (unsigned char) (0x80 | 0x40 | fromAddress); //set read bit and MB bit
-    this->transfer(send, receive, number+1);
-    memcpy(data, receive+1, number);  //ignore the first (address) byte in the array returned
+	if (this->transfer(send, receive, length + 1) == -1) {
+		return data;
+	}
+    memcpy(data, receive+1, length);  //ignore the first (address) byte in the array returned
     return data;
 }
 
@@ -79,7 +81,9 @@ int SPI::writeRegister(unsigned int registerAddress, unsigned char value) {
     send[0] = (unsigned char) registerAddress;
     send[1] = value;
     //cout << "The value that was written is: " << (int) send[1] << endl;
-    this->transfer(send, receive, 2);
+	if (this->transfer(send, receive, 2) == -1) {
+		return -1;
+	}
     return 0; // consider returning status of transfer
 }
 
