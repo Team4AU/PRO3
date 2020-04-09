@@ -1,0 +1,194 @@
+{%  extends "base.html" %}
+{%  load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div id="module_home">
+
+  <div class="padding">
+    <div class="container-fluid" id="underlay">
+        <div class="module-text">
+            <h1>Information om accelerometer prøvestand</h1>
+        </div>
+    </div>
+  </div>
+
+<div class="padding">
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+
+        <div class="container underlay">
+
+            <div class="padding">
+                <h3>Vejledning</h3>
+                <p class="text-justify">
+                    Denne prøvestand tester accelerometre som bliver testet under
+                    brugespecifikke parametre.
+                    <br>
+                    Sådan betjenes accelerometer prøvestanden:
+                </p>
+                <ul>
+                    <li> Under <a href="http://auteam2.mooo.com:81/demo_module/start_test/"
+                    target="_blank">opret test</a> kan man som bruger indsætte parametre, som vil
+                    blive sent til prøvestanden. Prøvestanden vil derefter udføre en test med
+                    brugerens parametre</li>
+                    <li> Hvad gør de forskellige parametre (stepSize, stepTimems,
+                        sampleFrequency, sensorID, steps)</li>
+                    <li> Efter testen kan man <a href="http://auteam2.mooo.com:81/demo_module/saved_data/"
+                    target="_blank">se data</a>, hvor der bliver fremstillet to grafer.
+                        Den ene graf er i tidsdomænet, og den anden graf er i frekvensdomænet</li>
+                    <li> Download .csv fil eller .xlsx for at arbejde videre med data</li>
+
+                </ul>
+                <p class="text-justify">
+                    Opret test
+                    <a href="http://auteam2.mooo.com:81/demo_module/start_test/"
+                    target="_blank">her</a>
+                     eller se data
+                    <a href="http://auteam2.mooo.com:81/demo_module/saved_data/"
+                    target="_blank">her</a>
+                </p>
+                <BR>
+                <p class="text-justify">
+                   <h3>Prøvestandens accelerometre</h3>
+                </p>
+                På prøvestanden er der monteret to accelerometre, ADXL345 og KX224.
+                Begge accelerometre er alsidige, har et lavt strømforbrug og findes
+                til en fornuftig pris. Accelerometrene er monteret på hvert sit
+                udviklingsboard hvorpå udvalgte funktioner er ført ud så de er let
+                tilgængelige. Dette er meget smart til en udviklingsfase, hvor man
+                ofte gerne vil eksperimentere med forskellige muligheder for tilkobling.
+                <BR>
+                <p class="text-justify">
+                   <h3>Sammenligning med andre typer</h3>
+                </p>
+                <p class="text-justify">
+                   Herunder sammenlignes egenskaber for forskellige accelerometre.
+                    Det er vigtigt at være opmærksom på at man under udvikling
+                    ofte arbejder på et udviklingsboard. I den forbindelse kan
+                    accelerometerets funktioner være begrænsede.
+                </p>
+
+                <table class="table table-dark">
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Pris* (kr)</th>
+                        <th>I2C</th>
+                        <th>SPI</th>
+                        <th>Strømforbrug ved 800Hz (µA)</th>
+                        <th>Max G (g)</th>
+                        <th>Max Output Data Rate (Hz)</th>
+                    </tr>
+                    <tr>
+                        <td>ADXL345</td>
+                        <td>49,30</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                        <td>140</td>
+                        <td>16</td>
+                        <td>3200</td>
+                    </tr>
+                    <tr>
+                        <td>KX224</td>
+                        <td>113,00</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                        <td>145</td>
+                        <td>32</td>
+                        <td>25600</td>
+                    </tr>
+                    <tr>
+                        <td>MMA8451Q</td>
+                        <td>19,42</td>
+                        <td>✅</td>
+                        <td></td>
+                        <td>165</td>
+                        <td>8</td>
+                        <td>800</td>
+                    </tr>
+                    <tr>
+                        <td>ADXL357</td>
+                        <td>395,96</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                        <td>200</td>
+                        <td>40</td>
+                        <td>256000</td>
+                    </tr>
+                </table>
+                <p class="text-justify">
+                    *Pris fra <a href="https://dk.rs-online.com"
+                    target="_blank">rs-online</a> og <a href="https://dk.farnell.com"
+                    target="_blank">farnell</a>
+                </p>
+                <br>
+                <p class="text-justify">
+                    Længere nede på siden kan du se status for accelerometer prøvestanden
+                </p>
+            </div>
+
+
+
+
+        </div>
+
+      </div>
+      <div class="padding">
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+
+        <div class="container underlay">
+
+            <h3>Status for prøvestand (test-stub)</h3>
+
+            <div class="padding">
+
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                          <th scope="col">Tid (UTC)</th>
+                          <th scope="col">Statuskode</th>
+                          <th scope="col">Powerkode</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for status in status_list %}
+                            <tr>
+                              <td>{{ status.latest_status_update }}</td>
+                              <td>{{ status.latest_status_code }}</td>
+                              <td>{{ status.latest_power_code }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+      </div>
+  </div>
+</div>
+
+</div>
+  </div>
+</div>
+
+</div>
+
+
+
+
+<!-- managed via the css file -->
+
+<!-- JS libraries for the Bokeh chart library -->
+<!-- See: https://docs.bokeh.org/en/1.4.0/docs/user_guide/quickstart.html -->
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-1.4.0.min.js"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-1.4.0.min.js"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-1.4.0.min.js"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-1.4.0.min.js"></script>
+{{ script | safe }}
+
+{% endblock content %}
+
