@@ -18,8 +18,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ADXL345_FILE "adxl345.txt"
-#define KX224_FILE	 "kx224.txt"
+//depends on where the data is saved
+#define ADXL345_FILE "../Testcase/adxl345.txt"
+#define KX224_FILE	 "../Testcase/kx224.txt"
 
 class Datahandler
 {
