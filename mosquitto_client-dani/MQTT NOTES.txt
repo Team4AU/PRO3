@@ -1,0 +1,15 @@
+https://arduino.stackexchange.com/questions/56026/how-to-pass-non-static-class-member-to-callback
+http://www.tigli.fr/lib/exe/fetch.php?media=cours:tutorial_mqtt_mit_2015_2016.pdf
+http://www.steves-internet-guide.com/mqtt-keep-alive-by-example/
+http://www.steves-internet-guide.com/mqtt-basics-course/
+http://www.steves-internet-guide.com/mqtt/
+https://gist.github.com/piccaso/f463f6ad134a8a2479e62e6e2349e7c0
+http://p-nand-q.com/programming/cplusplus/using_member_functions_with_c_function_pointers.html
+https://isocpp.org/wiki/faq/pointers-to-members
+https://mosquitto.org/api/files/mosquitto-h.html
+https://test.mosquitto.org/
+
+
+
+
+
