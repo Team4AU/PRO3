@@ -3,6 +3,8 @@
 //
 
 #include "mqttClient2.h"
+#include <chrono>
+
 /**
  * initialize mqttclient
  * no default constructor
@@ -34,6 +36,7 @@ mqttClient2::~mqttClient2() {
 }
 
 /**
+ * * @deprecated loop_start does not work correctly
  * subscribe to mqtt broker on topic
  * (we can only handle 1 topic)
  * @return -1 on error, 0 on success
@@ -50,10 +53,12 @@ int mqttClient2::subscribe() {
     mosquitto_message_callback_set(this->m_mosq, _onMessage); //mqtt callback
     mosquitto_disconnect_callback_set(this->m_mosq,_onDisconnect); //mqtt callback
     mosquitto_connect_callback_set(this->m_mosq,_onConnect); //mqtt callback
+    mosquitto_log_callback_set(this->m_mosq,_onLog); //mqtt callback
+    mosquitto_publish_callback_set(this->m_mosq,_onPublish); //mqtt callback
 
     //connect to broker
-    this->rc = mosquitto_connect(this->m_mosq,this->host,this->port,this->keepAlive);
-    if(rc != MOSQ_ERR_SUCCESS){
+    if(mosquitto_connect(this->m_mosq,this->host,this->port,this->keepAlive)
+                        != MOSQ_ERR_SUCCESS){
         //error
         return -1;
     }
@@ -86,30 +91,18 @@ int mqttClient2::subscribe() {
  * @return -1 on error, 0 on success
  */
 int mqttClient2::publish(const char *message) {
-    /**
-     * publish - send message
-     * mid - message id
-     * retain - not sure......
-     */
-    if(mosquitto_publish(this->m_mosq,NULL,this->publishTopic,strlen(message),
-                         message,0,0) != MOSQ_ERR_SUCCESS){
-        //error
-        return -1;
-    }
+    this->msgQueue.enqueue(message);
     //return success
     return 0;
 }
 
 /**
  * disconnects mqtt
- * cleans up before leaving
+ * Stops worker thread
  */
 void mqttClient2::disconnect() {
-    //we disconnect - clean up
-    mosquitto_disconnect(this->m_mosq);
-    mosquitto_loop_stop(this->m_mosq,true);
-    mosquitto_destroy(this->m_mosq);
-    mosquitto_lib_cleanup();
+    //stop thread
+    this->run = false;
 }
 
 /**
@@ -170,7 +163,7 @@ void mqttClient2::_onConnect(struct mosquitto *mosq, void *obj, int rc) {
 
     //get ref to mqttClient instance
     auto * instance = reinterpret_cast<mqttClient2*>(obj);
-    //tell "world" we connected - this might not be needed
+    //tell "world" how connect went
     instance->_icallback->onConnect(rc);
 }
 
@@ -196,11 +189,110 @@ void mqttClient2::_onDisconnect(struct mosquitto *mosq, void *obj, int rc) {
 }
 
 /**
+ * mqtt log event
+ * use to write events to a file
+ * @param mosq - instance of mosquitto
+ * @param obj - instance of "this"
+ * @param rc - int indication what happened
+ * @param msg - error message
+ */
+void mqttClient2::_onLog(struct mosquitto *mosq, void *obj, int rc,
+                         const char *msg) {
+    //consider writing to a file here
+
+}
+
+/**
+ * mqtt onpublish event
+ * @param mosq - instance of mosquitto
+ * @param obj - instance of "this"
+ * @param rc - int indication what happened
+ */
+void mqttClient2::_onPublish(struct mosquitto *mosq, void *obj, int rc) {
+    //get ref to mqttClient instance
+    auto * instance = reinterpret_cast<mqttClient2*>(obj);
+    //tell "world" how publish went
+    instance->_icallback->onPublish(rc);
+}
+
+/**
  * Set listener for callbacks
  * @param _icallback - ref to listener
  */
 void mqttClient2::setCallback(IMqttCallback *_icallback) {
     this->_icallback = _icallback;
 }
+
+/**
+ * starts thread for mqtt client
+ * @return running mqtt thread
+ */
+std::thread mqttClient2::mqttThread() {
+    return std::thread(&mqttClient2::worker,this);
+}
+
+/**
+ * worker thread for mqtt client
+ */
+void mqttClient2::worker() {
+    //id is clientId - can be null
+    this->m_mosq = mosquitto_new(this->id,this->cleanSession,this);
+    if(!this->m_mosq){
+        //error creating client
+        return;
+    }
+
+    mosquitto_subscribe_callback_set(this->m_mosq,_onSubscribe); //mqtt callback
+    mosquitto_message_callback_set(this->m_mosq, _onMessage); //mqtt callback
+    mosquitto_disconnect_callback_set(this->m_mosq,_onDisconnect); //mqtt callback
+    mosquitto_connect_callback_set(this->m_mosq,_onConnect); //mqtt callback
+    mosquitto_log_callback_set(this->m_mosq,_onLog); //mqtt callback
+    mosquitto_publish_callback_set(this->m_mosq,_onPublish); //mqtt callback
+
+    //connect to broker
+    if(mosquitto_connect(this->m_mosq,this->host,this->port,this->keepAlive)
+       != MOSQ_ERR_SUCCESS){
+        //error connecting
+        return;
+    }
+
+    //subscribe to topic - mid is message Id can be NULL - qos is quality of
+    // ser
+    /**
+     * Subscribe to topic
+     * mid - message id, can be NULL we do not need it
+     * qos - quality of service - 0 is none????
+     */
+    if(mosquitto_subscribe(this->m_mosq,NULL,this->subscribeTopic,0)
+       != MOSQ_ERR_SUCCESS) {
+        //ERROR subscribing
+        return;
+    }
+
+    //run mosquitto_loop - process in and out going traffic
+    while(this->run){
+        this->rc = mosquitto_loop(this->m_mosq,-1,1);
+        if(this->run && this->rc == MOSQ_ERR_CONN_LOST){
+            //wait 1 second between reconnect tries
+            std::this_thread::sleep_for(std::chrono::milliseconds(this->reconnectTime));
+            mosquitto_reconnect(this->m_mosq);
+        }
+        //check if there is something to publish and send it
+        std::string msg;
+        if(msgQueue.dequeue(msg)){
+            mosquitto_publish(this->m_mosq,NULL,this->publishTopic,
+                    msg.length(),msg.c_str(),0,0);
+        }
+    }
+
+    //we disconnect - clean up
+    mosquitto_disconnect(this->m_mosq);
+    mosquitto_destroy(this->m_mosq);
+    mosquitto_lib_cleanup();
+}
+
+
+
+
 
 

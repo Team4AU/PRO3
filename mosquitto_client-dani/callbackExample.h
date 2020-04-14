@@ -16,6 +16,7 @@ public:
     void onSubscribe() override;
     void onConnect(int rc)override;
     void onDisconnect() override;
+    void onPublish(int rc) override;
 };
 
 

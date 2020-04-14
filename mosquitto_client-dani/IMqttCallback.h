@@ -16,6 +16,7 @@ public:
     virtual void onSubscribe() = 0;
     virtual void onConnect(int rc) = 0;
     virtual void onDisconnect() = 0;
+    virtual void onPublish(int rc) = 0;
 };
 
 
