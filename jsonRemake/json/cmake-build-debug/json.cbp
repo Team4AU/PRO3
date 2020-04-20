@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="json"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="json">
+				<Option output="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/json" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/rapidjson"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1/arm-linux-gnueabihf/."/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1/backward"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/include"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/include-fixed"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../arm-linux-gnueabihf/libc/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 json"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="json/fast">
+				<Option output="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/json" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/rapidjson"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1/arm-linux-gnueabihf/."/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include/c++/7.4.1/backward"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/include"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/include-fixed"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/7.4.1/../../../../arm-linux-gnueabihf/include"/>
+					<Add directory="/opt/toolchains/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/../arm-linux-gnueabihf/libc/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 json/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/dataPoint.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/dataPoint.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/jsonBase.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/jsonHandler.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/jsonHandler.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/jsonValidationException.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/jsonValidationException.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/main.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/mqttPayload.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/mqttPayload.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/testConfig.cpp">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/testConfig.h">
+			<Option target="json"/>
+		</Unit>
+		<Unit filename="/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

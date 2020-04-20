@@ -1,0 +1,4 @@
+/home/dani/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/201.6668.86/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/opt/toolchains/gnueabihf/bin/arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=/opt/toolchains/gnueabihf/bin/arm-linux-gnueabihf-c++ -G "CodeBlocks - Unix Makefiles" /home/dani/Desktop/sharedfolder/pro4/jsonRemake/json
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug

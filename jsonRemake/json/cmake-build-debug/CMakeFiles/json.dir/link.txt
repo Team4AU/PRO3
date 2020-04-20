@@ -1,0 +1,1 @@
+/opt/toolchains/gnueabihf/bin/arm-linux-gnueabihf-c++  -g   CMakeFiles/json.dir/main.cpp.o CMakeFiles/json.dir/jsonValidationException.cpp.o CMakeFiles/json.dir/jsonHandler.cpp.o CMakeFiles/json.dir/testConfig.cpp.o CMakeFiles/json.dir/dataPoint.cpp.o CMakeFiles/json.dir/mqttPayload.cpp.o  -o json 
