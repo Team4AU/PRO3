@@ -47,7 +47,7 @@ rapidjson::Value dataPoint::toJson(rapidjson::Document::AllocatorType& allocator
 void dataPoint::toObject(const rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) {
     //we have no schema for this object
     // and do not need to do json to object at this point.
-    throw jsonValidationException("NOT IMPLEMENTED",0,0);
+    throw "Function not implemented yet";
 }
 
 dataPoint::dataPoint() {

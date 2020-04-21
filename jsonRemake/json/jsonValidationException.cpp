@@ -5,18 +5,13 @@
 #include "jsonValidationException.h"
 
 jsonValidationException::jsonValidationException(const std::string &msg,
-                                                 int errNum, int errOff):
+                                                 int errNum):
                                                  std::runtime_error(msg) {
     this->errorNumber = errNum;
-    this->errorOffset = errOff;
 }
 
 jsonValidationException::~jsonValidationException() noexcept {
 
-}
-
-int jsonValidationException::getErrorOffset() const noexcept {
-    return this->errorOffset;
 }
 
 int jsonValidationException::getErrorNumber() const noexcept {

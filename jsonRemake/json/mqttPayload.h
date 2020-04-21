@@ -9,10 +9,21 @@
 #include "jsonBase.h"
 #include "testConfig.h"
 
-class mqttPayload {
+#define _protocolVersion "protocolVersion"
+#define _sentBy "sentBy"
+#define _msgType "msgType"
+#define _statusCode "statusCode"
+#define _parameterObj "parameterObj"
+#define _dataObj "dataObj"
+#define _dataPoints "dataPoints"
+#define _commandList "commandList"
+
+class mqttPayload : public jsonBase{
 public:
     mqttPayload();
     virtual ~mqttPayload();
+    rapidjson::Value toJson(rapidjson::Document::AllocatorType& allocator) override;
+    void toObject(const rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) override;
     void setTestConfig(testConfig test);
     testConfig getTestConfig();
     std::vector<dataPoint> getDataPoints();
@@ -20,29 +31,31 @@ public:
     void addDataPoints(dataPoint *dataPoints, int size);
     std::string getSentBy();
     void setSentBy(std::string sentBy);
-    std::string getProtocolVersion();
-    void setProtocolVersion(std::string protocolVersion);
+    float getProtocolVersion();
+    void setProtocolVersion(float protocolVersion);
     std::string getMsgType();
     void setMsgType(std::string msgType);
     std::vector<std::string> getCommandList();
     void addCommand(std::string command);
     std::string getStatusCode();
     void setStatusCode(std::string statusCode);
-    const std::string _protocolVersion = "protocolVersion";
-    const std::string _sentBy = "sentBy";
-    const std::string _msgType = "msgType";
-    const std::string _commandList = "commandList";
-    const std::string _statusCode = "statusCode";
-    const std::string _parameterObj = "parameterObj";
-    const std::string _dataObj = "dataObj";
+    bool getHasTestConfig();
+    void setHasTestConfig(bool hasTestConfig);
 private:
+    bool verifyCommands();
+    bool requiredSettings();
+    bool verifyMsgType();
+    bool hasTestConfig;
     std::vector<dataPoint> dataPoints;
     testConfig test;
     std::string sentBy;
-    std::string protocolVersion;
+    float protocolVersion;
     std::string msgType;
     std::vector<std::string> commandList;
     std::string statusCode;
+    std::vector<std::string> suportedCmds;
+    std::vector<std::string> cmdsWithSettings;
+    std::vector<std::string> supportedMsgTypes;
 };
 
 

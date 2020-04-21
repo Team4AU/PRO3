@@ -9,15 +9,18 @@
 #include "testConfig.h"
 #include "mqttPayload.h"
 
+
 class jsonHandler {
 public:
     jsonHandler();
     virtual ~jsonHandler();
-    std::string toJsonString(mqttPayload data);
+    std::string payloadJsonMsg(mqttPayload data);
     mqttPayload toMqttMessage(const std::string& jsonString);
+    std::string acknowledgeJsonMsg(std::string sentBy, std::string statusCode, std::string msgType);
+
 private:
     std::string getSchema();
-    const std::string schemaFilePath = "protocol_v1_1.schema";
+    const std::string schemaFilePath = "../protocol_v1_1.schema";
 };
 
 

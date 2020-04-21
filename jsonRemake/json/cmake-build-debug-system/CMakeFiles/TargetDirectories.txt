@@ -1,0 +1,3 @@
+/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug-system/CMakeFiles/rebuild_cache.dir
+/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug-system/CMakeFiles/edit_cache.dir
+/home/dani/Desktop/sharedfolder/pro4/jsonRemake/json/cmake-build-debug-system/CMakeFiles/json.dir

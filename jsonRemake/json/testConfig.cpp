@@ -13,6 +13,12 @@
 #define _stepTime "stepTime"
 
 testConfig::testConfig() {
+    this->sensorID = -1;
+    this->sensorType = -1;
+    this->startFrequency = -1;
+    this->stopFrequency = -1;
+    this->stepFrequency = -1;
+    this->stepTimeMs = -1;
 }
 
 testConfig::~testConfig() {
@@ -48,76 +54,71 @@ void testConfig::toObject(const rapidjson::Value& value, rapidjson::Document::Al
     //we have no schema for this object
     std::stringstream validationMsg;
 
-    //check member
-    if(!value.IsObject()){
-        validationMsg << "testConfig is not an object" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
-    }
     //check member sensorID
     if(!value.HasMember(_sensorID)){
         validationMsg << "Missing member: " << _sensorID << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_sensorID].IsInt()){
         validationMsg << _sensorID << ": wrong datatype" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
     this->sensorID = value[_sensorID].GetInt();
 
     //check member sensorType
     if(!value.HasMember(_sensorType)){
         validationMsg << "Missing member: " << _sensorType << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_sensorType].IsInt()){
         validationMsg << _sensorType << ": wrong datatype" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
-    this->sensorID = value[_sensorType].GetInt();
+    this->sensorType = value[_sensorType].GetInt();
 
     //check member startFrequency
     if(!value.HasMember(_startFrequency)){
         validationMsg << "Missing member: " << _startFrequency << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_startFrequency].IsInt()){
         validationMsg << _startFrequency << ": wrong datatype" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
-    this->sensorID = value[_startFrequency].GetInt();
+    this->startFrequency = value[_startFrequency].GetInt();
 
     //check member stopFrequency
     if(!value.HasMember(_stopFrequency)){
         validationMsg << "Missing member: " << _stopFrequency << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_stopFrequency].IsInt()){
         validationMsg << _stopFrequency << ": wrong datatype" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
-    this->sensorID = value[_stopFrequency].GetInt();
+    this->stopFrequency = value[_stopFrequency].GetInt();
 
     //check member stepFrequency
     if(!value.HasMember(_stepFrequency)){
         validationMsg << "Missing member: " << _stepFrequency << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_stepFrequency].IsInt()){
         validationMsg << _stepFrequency << ": wrong datatype" << std::endl;
-        throw jsonValidationException(validationMsg.str(),0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
-    this->sensorID = value[_stepFrequency].GetInt();
+    this->stepFrequency = value[_stepFrequency].GetInt();
 
     //check member stepTime
     if(!value.HasMember(_stepTime)){
         validationMsg << "Missing member: " << _stepTime << std::endl;
-        throw jsonValidationException("Missing member",0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_MISSING_MEMBER);
     }
     if(!value[_stepTime].IsInt()){
         validationMsg << _stepTime << ": wrong datatype" << std::endl;
-        throw jsonValidationException("Member wrong datatype",0,0);
+        throw jsonValidationException(validationMsg.str(),JsonValidationErrors::_NOT_INT);
     }
-    this->sensorID = value[_stepTime].GetInt();
+    this->stepTimeMs = value[_stepTime].GetInt();
 }
 
 int testConfig::getSensorID() {

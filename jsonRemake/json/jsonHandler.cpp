@@ -7,14 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <utility>
 #include <schema.h>
-/*
-#define _protocolVersion "protocolVersion"
-#define _sentBy "sentBy"
-#define _msgType "msgType"
-#define _statusCode "statusCode"
-#define _parameterObj "parameterObj"
-#define _dataObj "dataObj"*/
+
 
 jsonHandler::jsonHandler() {
 
@@ -24,56 +19,25 @@ jsonHandler::~jsonHandler() {
 
 }
 
-std::string jsonHandler::toJsonString(mqttPayload payload) {
-    //do my validation
-    //TRY CATCH SHOULD NOT BE HERE, BUT ON OTHER SIDE WHERE WE CALL THIS FUNCTION...
-
+std::string jsonHandler::payloadJsonMsg(mqttPayload payload) {
+    //create json string
     rapidjson::Document doc;
-
     rapidjson::Value val;
 
     doc.SetObject();
     rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
-    //figure out why i cant use const char
-    //add protocolVersion
-    val.SetString(payload.getProtocolVersion().c_str(),payload.getProtocolVersion().length());
-    doc.AddMember("protocolVersion",val,allocator);
-
-    val.SetString(payload.getSentBy().c_str(),payload.getSentBy().length());
-    doc.AddMember("sentBy",val,allocator);
-
-    val.SetString(payload.getMsgType().c_str(),payload.getMsgType().length());
-    doc.AddMember("msgType",val,allocator);
-
-    //NOT SURE IF I NEED TO SEND COMMAND LIST BACK ??
-    //SKIP FOR NOW
-
-    val.SetString(payload.getStatusCode().c_str(),payload.getStatusCode().length());
-    doc.AddMember("statusCode",val,allocator);
-
-    //add paramObj
-    doc.AddMember("parameterObj",payload.getTestConfig().toJson(allocator),allocator); //can i even do this?
-
-    //add dataObj
-    rapidjson::Value readings(rapidjson::kArrayType);
-    //for(auto it = data.getDataPoints().begin();it != data.getDataPoints().end();++it)
-    //above should work - if below does not
-    for(auto & it : payload.getDataPoints()){
-        readings.PushBack(it.toJson(allocator),allocator);
-    }
-    doc.AddMember("dataObj",readings,allocator);
+    val = payload.toJson(allocator);
+    doc.Swap(val);
 
     //make it a string - ready to send
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    writer.SetMaxDecimalPlaces(2);//change if we ever need more
     doc.Accept(writer);
     return buffer.GetString();
-
-    //REMEMBER TO THROW THIS EXCEPTION INSIDE
-    //throw jsonValidationException("shiiiit",1,1);
-
 }
 
+//use for full payload with testconfig and datapoints
 mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
     rapidjson::Document doc;
     rapidjson::Document schemaDoc;
@@ -81,7 +45,7 @@ mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
     //validate against SCHEMA
     if(schemaDoc.Parse(getSchema().c_str()).HasParseError()){
         //schema is not valid JSON
-        throw jsonValidationException("JSON Schema is not valid JSON",1,0);
+        throw jsonValidationException("JSON Schema is not valid JSON",JsonValidationErrors::_NOT_VALID_JSON);
     }
 
     rapidjson::SchemaDocument schema(schemaDoc);//schemaDoc can be deallocated
@@ -89,7 +53,7 @@ mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
     //parse to DOM
     if(doc.Parse(jsonString.c_str()).HasParseError()){
         //error
-        throw jsonValidationException("Parse error in document",1,0);
+        throw jsonValidationException("Parse error in document",JsonValidationErrors::_NOT_VALID_JSON);
     }
 
     rapidjson::SchemaValidator validator(schema);
@@ -102,41 +66,38 @@ mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
         errorMsg << "Invalid schema" << buffer.GetString() << std::endl <<
         "Invalid keyword: " << validator.GetInvalidSchemaKeyword() << std::endl;
 
-        throw jsonValidationException(errorMsg.str(),1,0);
+        throw jsonValidationException(errorMsg.str(),JsonValidationErrors::_SCHEMA_ERROR);
     }
 
+    //parse to object
     mqttPayload msg;
-    testConfig testConfig;
-    const rapidjson::Value& paramObj = doc[msg._parameterObj.c_str()];
-    testConfig.toObject(paramObj,doc.GetAllocator()); //initialize from JSON
-    msg.setTestConfig(testConfig); //set paramObj
+    msg.toObject(doc.GetObject(),doc.GetAllocator());
+    return msg;
+}
 
-    msg.setMsgType(doc[msg._msgType.c_str()].GetString());
-    //msg.setProtocolVersion(); -- keep it like this until i know datatype
-    msg.setSentBy(doc[msg._sentBy.c_str()].GetString());
-    msg.setStatusCode(doc[msg._statusCode.c_str()].GetString());
-    const rapidjson::Value& cmdList = doc[msg._commandList.c_str()];
-    //loop array - not sure if commands are ints or strings
-    for(rapidjson::Value::ConstValueIterator it = cmdList.Begin(); it != cmdList.End();++it){
-        msg.addCommand(it->GetString());
-    }
+//use for acknowledge messages, where there is no datapoints or testconfig
+std::string jsonHandler::acknowledgeJsonMsg(std::string sentBy, std::string statusCode, std::string msgType) {
+    //create json string
 
-    /**
-     * THIS IS NOT NEEDED, WHAT AM I THINKING, WE ONLY SEND DATAPOINTS NOT RECIEVE THEM
-     * CODE FOR WHEN WE WANNA GO JSON TO OBJECT FOR DATAPOINTS
-    const rapidjson::Value& dataObj = doc[msg._dataObj.c_str()];
-    //loop array
-    for(rapidjson::Value::ConstValueIterator it = dataObj.Begin(); it != dataObj.End();++it){
-        dataPoint reading;
-        const rapidjson::Value& jRead = *it;
-        if(!reading.toObject(jRead)){
-            //error - error should be thrown inside
-        }
-        msg.addDataPoint(reading);
-    }
-     */
+    mqttPayload payload;
+    payload.setProtocolVersion(1.1);
+    payload.setSentBy(std::move(sentBy));
+    payload.setStatusCode(std::move(statusCode));
+    payload.setMsgType(std::move(msgType));
+    rapidjson::Document doc;
+    rapidjson::Value val;
 
-    return mqttPayload();
+    doc.SetObject();
+    rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+    val = payload.toJson(allocator);
+    doc.Swap(val);
+
+    //make it a string - ready to send
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    writer.SetMaxDecimalPlaces(2);//change if we ever need more
+    doc.Accept(writer);
+    return buffer.GetString();
 }
 
 std::string jsonHandler::getSchema() {
@@ -145,6 +106,7 @@ std::string jsonHandler::getSchema() {
     schemaFile.open(schemaFilePath);
     std::stringstream stringStream;
     stringStream << schemaFile.rdbuf(); //read file
-
     return stringStream.str();
 }
+
+
