@@ -256,7 +256,7 @@ int KX224::CloseOutFile() {
  * @param samples
  * @return
  */
-int KX224::ReadSensorState(int samples) {
+int KX224::ReadSensorStateToFile(int samples) {
 	//open file here..
 	if (OpenOutFile()) {
 		perror("KX224: Failed open file");
@@ -295,8 +295,8 @@ int KX224::ReadSensorState(int samples) {
 }
 
 /**
- *
- * @return
+ * @brief Reads sensor state, by reading register 0x6-0x11
+ * @return -1 on failure and 1 on success
  */
 int KX224::readSensorData() {
     this->registers = this->busType->readRegisters(BUFFER_SIZE, XOUTL);
@@ -311,6 +311,37 @@ int KX224::readSensorData() {
     this->accelZ = this->combineRegisters(*(registers + 5), *(registers + 4));
 
     return 0;
+}
+
+/**
+ * @brief Reads sensor state, by reading register 0x6-0x11 continuously N times
+ * @param data array of dataPoints
+ * @param samples number of readings
+ * @return -1 on failure and 1 on success
+ */
+int ReadSensorState(dataPoint * data, int samples) {
+    for (int i = 0; i < samples;i++) {
+        this->registers = this->busType->readRegisters(BUFFER_SIZE, XOUTL);
+        if (this->registers == NULL) {
+            perror("KX224: Failure Condition - Sensor ID not Verified");
+            return -1;
+        }
+        //checks if data is the same as before. Registers start at the first data register
+        if ((memcmp (olddata, registers + XOUTL, BUFFER_SIZE)) == 0) {
+            i--;
+        }
+        else {
+
+            this->accelX = this->combineRegisters(*(registers + 1), *(registers + 0));
+            this->accelY = this->combineRegisters(*(registers + 3), *(registers + 2));
+            this->accelZ = this->combineRegisters(*(registers + 5), *(registers + 4));
+
+            dataPoint dp(this->accelX,this->accelY,this->accelZ);
+            data[i] = dp;
+            //sets new data to old data. Register starts at first data register
+            memcpy(olddata,registers+XOUTL,BUFFER_SIZE);
+        }
+    }
 }
 
 /**

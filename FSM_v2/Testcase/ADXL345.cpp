@@ -11,7 +11,7 @@
 #include "ADXL345.h"
 
 //defines
-#define BUFFER_SIZE 0x40
+#define BUFFER_SIZE 0x6
 
 //ADXL345 register defines
 #define DEVID          0x00   //Device ID
@@ -147,7 +147,7 @@ int ADXL345::setBWrate(ADXL345::BAUD baud)
  * @param samples int number of successive reads
  * @return 0 if the registers are successfully read and -1 if error occurrs.
  */
-int ADXL345::ReadSensorState(int samples) {
+int ADXL345::ReadSensorStateToFile(int samples) {
 	//open file here..
 	if (OpenOutFile()) {
 		perror("ADXL345: Failed open file");
@@ -155,7 +155,7 @@ int ADXL345::ReadSensorState(int samples) {
 	}
 
 	for (int i = 0; i < samples;i++) {
-		this->registers = this->busType->readRegisters(BUFFER_SIZE, 0x00);
+		this->registers = this->busType->readRegisters(BUFFER_SIZE, DATAX0);
 		if (*this->registers != 0xe5) {
 			perror("ADXL345: Failure Condition - Sensor ID not Verified");
 			return -1;
@@ -169,8 +169,9 @@ int ADXL345::ReadSensorState(int samples) {
 		this->accelX = this->combineRegisters(*(registers + DATAX1), *(registers + DATAX0));
 		this->accelY = this->combineRegisters(*(registers + DATAY1), *(registers + DATAY0));
 		this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
-		this->resolution = (ADXL345::RESOLUTION) (((*(registers + DATA_FORMAT)) & 0x08) >> 3);
-		this->range = (ADXL345::RANGE) ((*(registers + DATA_FORMAT)) & 0x03);
+		//this->resolution = (ADXL345::RESOLUTION) (((*(registers + DATA_FORMAT)) & 0x08) >> 3);
+		//this->range = (ADXL345::RANGE) ((*(registers + DATA_FORMAT)) & 0x03);
+		*/
 		if (WriteDataToFile(this->accelX, this->accelY, this->accelZ)) {
 			perror("ADXL345: Failed write X, Y & Z to file");
 			return -1;
@@ -184,6 +185,36 @@ int ADXL345::ReadSensorState(int samples) {
 		return 1;
 	}
 	return 0;
+}
+
+/**
+ * @brief Reads sensor state, by reading register 0x32-0x37 continuously N times
+ * @param data array of dataPoints
+ * @param samples number of readings
+ * @return -1 on failure and 1 on success
+ */
+int ReadSensorState(dataPoint * data, int samples) {
+    for (int i = 0; i < samples;i++) {
+        this->registers = this->busType->readRegisters(BUFFER_SIZE, DATAX0);
+        if (*this->registers != 0xe5) {
+            perror("ADXL345: Failure Condition - Sensor ID not Verified");
+            return -1;
+        }
+        //checks if data is the same as before. Registers start at the first data register
+        if ((memcmp (olddata, registers + DATAX0, DATALEN)) == 0) {
+            i--;
+        }
+        else {
+
+            this->accelX = this->combineRegisters(*(registers + DATAX1), *(registers + DATAX0));
+            this->accelY = this->combineRegisters(*(registers + DATAY1), *(registers + DATAY0));
+            this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
+            dataPoint dp(this->accelX,this->accelY,this->accelZ);
+            data[i] = dp;
+            //sets new data to old data. Register starts at first data register
+            memcpy(olddata,registers+DATAX0,DATALEN);
+        }
+    }
 }
 
 /**

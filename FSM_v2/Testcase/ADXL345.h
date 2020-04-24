@@ -69,7 +69,8 @@ public:
 	int WriteDataToFile(ostream os, short x, short y, short z);
 	int OpenOutFile() override;
 	int CloseOutFile() override;
-	int ReadSensorState(int samples) override;
+	int ReadSensorStateToFile(int samples) override;
+    int ReadSensorState(dataPoint * data, int samples) override;
 
 private:
     Bus *busType;

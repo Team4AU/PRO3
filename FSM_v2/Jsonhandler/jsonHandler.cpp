@@ -10,15 +10,25 @@
 #include <utility>
 #include <rapidjson/schema.h>
 
-
+/**
+ *
+ */
 jsonHandler::jsonHandler() {
 
 }
 
+/**
+ *
+ */
 jsonHandler::~jsonHandler() {
 
 }
 
+/**
+ *
+ * @param payload
+ * @return
+ */
 std::string jsonHandler::payloadJsonMsg(mqttPayload payload) {
     //create json string
     rapidjson::Document doc;
@@ -37,7 +47,11 @@ std::string jsonHandler::payloadJsonMsg(mqttPayload payload) {
     return buffer.GetString();
 }
 
-//use for full payload with testconfig and datapoints
+/**
+ *
+ * @param jsonString
+ * @return
+ */
 mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
     rapidjson::Document doc;
     rapidjson::Document schemaDoc;
@@ -75,7 +89,13 @@ mqttPayload jsonHandler::toMqttMessage(const std::string& jsonString) {
     return msg;
 }
 
-//use for acknowledge messages, where there is no datapoints or testconfig
+/**
+ *
+ * @param sentBy
+ * @param statusCode
+ * @param msgType
+ * @return
+ */
 std::string jsonHandler::acknowledgeJsonMsg(std::string sentBy, std::string statusCode, std::string msgType) {
     //create json string
 
@@ -100,6 +120,10 @@ std::string jsonHandler::acknowledgeJsonMsg(std::string sentBy, std::string stat
     return buffer.GetString();
 }
 
+/**
+ *
+ * @return
+ */
 std::string jsonHandler::getSchema() {
     //open file and get schema
     std::ifstream schemaFile;

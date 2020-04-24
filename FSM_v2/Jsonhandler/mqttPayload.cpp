@@ -4,7 +4,9 @@
 
 #include "mqttPayload.h"
 
-
+/**
+ *
+ */
 mqttPayload::mqttPayload() {
     this->protocolVersion = 1.1f; //this is not a good solution
     this->suportedCmds.emplace_back(WebCommands::_RUN);
@@ -18,62 +20,117 @@ mqttPayload::mqttPayload() {
     this->hasTestConfig = false;
 }
 
+/**
+ *
+ */
 mqttPayload::~mqttPayload() {
 
 }
 
+/**
+ *
+ * @param test
+ */
 void mqttPayload::setTestConfig(testConfig test) {
     this->test = test;
     this->hasTestConfig = true;
 }
 
+/**
+ *
+ * @return
+ */
 testConfig mqttPayload::getTestConfig() {
     return this->test;
 }
 
-
+/**
+ *
+ * @param dataPoint
+ */
 void mqttPayload::addDataPoint(dataPoint dataPoint) {
     this->dataPoints.push_back(dataPoint);
 }
 
+/**
+ *
+ * @param dataPoints
+ * @param size
+ */
 void mqttPayload::addDataPoints(dataPoint *dataPoints, int size) {
     for (int i = 0; i < size;i++){
         this->dataPoints.push_back(dataPoints[i]);
     }
 }
 
+/**
+ *
+ * @return
+ */
 std::vector<dataPoint> mqttPayload::getDataPoints() {
     return this->dataPoints;
 }
 
+/**
+ *
+ * @return
+ */
 std::string mqttPayload::getSentBy() {
     return this->sentBy;
 }
 
+/**
+ *
+ * @param sentBy
+ */
 void mqttPayload::setSentBy(std::string sentBy) {
     this->sentBy = sentBy;
 }
 
+/**
+ *
+ * @return
+ */
 float mqttPayload::getProtocolVersion() {
     return this->protocolVersion;
 }
 
+/**
+ *
+ * @param protocolVersion
+ */
 void mqttPayload::setProtocolVersion(float protocolVersion) {
     this->protocolVersion = protocolVersion;
 }
 
+/**
+ *
+ * @return
+ */
 std::string mqttPayload::getMsgType() {
     return this->msgType;
 }
 
+/**
+ *
+ * @param msgType
+ */
 void mqttPayload::setMsgType(std::string msgType) {
     this->msgType = msgType;
 }
 
+/**
+ *
+ * @return
+ */
 std::vector<std::string> mqttPayload::getCommandList() {
     return this->commandList;
 }
 
+/**
+ *
+ * @param command
+ */
 void mqttPayload::addCommand(std::string command) {
     this->commandList.push_back(command);
 }
@@ -82,10 +139,19 @@ std::string mqttPayload::getStatusCode() {
     return this->statusCode;
 }
 
+/**
+ *
+ * @param statusCode
+ */
 void mqttPayload::setStatusCode(std::string statusCode) {
     this->statusCode = statusCode;
 }
 
+/**
+ *
+ * @param allocator
+ * @return
+ */
 rapidjson::Value mqttPayload::toJson(
         rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> &allocator) {
     rapidjson::Value jObj(rapidjson::kObjectType);
@@ -121,6 +187,11 @@ rapidjson::Value mqttPayload::toJson(
     return jObj;
 }
 
+/**
+ *
+ * @param value
+ * @param allocator
+ */
 void mqttPayload::toObject(const rapidjson::Value &value,
                            rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> &allocator) {
     //validate protocolVersion first
@@ -183,6 +254,10 @@ void mqttPayload::toObject(const rapidjson::Value &value,
 
 }
 
+/**
+ *
+ * @return
+ */
 bool mqttPayload::verifyCommands() {
     //verify all commands
     int totalCommands = this->commandList.size();
@@ -200,6 +275,10 @@ bool mqttPayload::verifyCommands() {
     return false;
 }
 
+/**
+ *
+ * @return
+ */
 bool mqttPayload::requiredSettings() {
     //based on commands- we might not required parameterObj
     for(auto & it_cl : this->commandList){
@@ -213,6 +292,10 @@ bool mqttPayload::requiredSettings() {
     return false;
 }
 
+/**
+ *
+ * @return
+ */
 bool mqttPayload::verifyMsgType() {
     for(auto & it : this->supportedMsgTypes){
         if(it == this->msgType){
@@ -222,10 +305,18 @@ bool mqttPayload::verifyMsgType() {
     return false;
 }
 
+/**
+ *
+ * @return
+ */
 bool mqttPayload::getHasTestConfig() {
     return this->hasTestConfig;
 }
 
+/**
+ *
+ * @param hasTestConfig
+ */
 void mqttPayload::setHasTestConfig(bool hasTestConfig) {
     this->hasTestConfig = hasTestConfig;
 }

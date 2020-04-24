@@ -12,6 +12,9 @@
 #define _stepFrequency "stepFrequency"
 #define _stepTime "stepTime"
 
+/**
+ *
+ */
 testConfig::testConfig() {
     this->sensorID = -1;
     this->sensorType = -1;
@@ -21,10 +24,18 @@ testConfig::testConfig() {
     this->stepTimeMs = -1;
 }
 
+/**
+ *
+ */
 testConfig::~testConfig() {
 
 }
 
+/**
+ *
+ * @param allocator
+ * @return
+ */
 rapidjson::Value testConfig::toJson(rapidjson::Document::AllocatorType& allocator) {
     rapidjson::Value jObj(rapidjson::kObjectType);
     rapidjson::Value val;
@@ -50,6 +61,11 @@ rapidjson::Value testConfig::toJson(rapidjson::Document::AllocatorType& allocato
     return jObj;
 }
 
+/**
+ *
+ * @param value
+ * @param allocator
+ */
 void testConfig::toObject(const rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) {
     //we have no schema for this object
     std::stringstream validationMsg;
@@ -121,50 +137,98 @@ void testConfig::toObject(const rapidjson::Value& value, rapidjson::Document::Al
     this->stepTimeMs = value[_stepTime].GetInt();
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getSensorID() {
     return this->sensorID;
 }
 
+/**
+ *
+ * @param sensorID
+ */
 void testConfig::setSensorID(int sensorID) {
     this->sensorID = sensorID;
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getSensorType() {
     return this->sensorType;
 }
 
+/**
+ *
+ * @param sensorType
+ */
 void testConfig::setSensorType(int sensorType) {
     this->sensorType = sensorType;
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getStartFrequency() {
     return this->startFrequency;
 }
 
+/**
+ *
+ * @param startFrequency
+ */
 void testConfig::setStartFrequency(int startFrequency) {
     this->startFrequency = startFrequency;
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getStopFrequency() {
     return this->stopFrequency;
 }
 
+/**
+ *
+ * @param stopFrequency
+ */
 void testConfig::setStopFrequency(int stopFrequency) {
     this->stopFrequency = stopFrequency;
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getStepFrequency() {
     return this->stepFrequency;
 }
 
+/**
+ *
+ * @param stepFrequency
+ */
 void testConfig::setStepFrequency(int stepFrequency) {
     this->stepFrequency = stepFrequency;
 }
 
+/**
+ *
+ * @return
+ */
 int testConfig::getStepTimeMs() {
     return this->stepTimeMs;
 }
 
+/**
+ *
+ * @param stepTimeMs
+ */
 void testConfig::setStepTimeMs(int stepTimeMs) {
     this->stepTimeMs = stepTimeMs;
 }
