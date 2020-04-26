@@ -319,7 +319,7 @@ int KX224::readSensorData() {
  * @param samples number of readings
  * @return -1 on failure and 1 on success
  */
-int ReadSensorState(dataPoint * data, int samples) {
+int KX224::ReadSensorState(dataPoint * data, int samples) {
     for (int i = 0; i < samples;i++) {
         this->registers = this->busType->readRegisters(BUFFER_SIZE, XOUTL);
         if (this->registers == NULL) {
@@ -342,6 +342,7 @@ int ReadSensorState(dataPoint * data, int samples) {
             memcpy(olddata,registers+XOUTL,BUFFER_SIZE);
         }
     }
+    return 0;
 }
 
 /**

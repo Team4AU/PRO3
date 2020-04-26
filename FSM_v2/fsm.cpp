@@ -17,7 +17,12 @@
 
 fsm::fsm() :
 		mqtt(NULL, HOST, PORT, SUBTOP, PUBTOP, true) {
-	// TODO Auto-generated constructor stub
+	this->connectedFlag = false;
+	this->subFlag = false;
+	this->publishSucc = false;
+	this->nextState = connect;
+	this->messRecviedFlag = false;
+	this->returncode = 0;
 
 }
 
@@ -45,8 +50,8 @@ void fsm::onMessage(std::string message) {
 		}
 	} catch (jsonValidationException &je) {
 		std::cout << je.getErrorNumber() << " " << je.what() << std::endl;
-		Jsonhandler.acknowledgeJsonMsg("",
-							WebStatusCodes::_400, WebMsgTypes::_STATUS);
+		Jsonhandler.acknowledgeJsonMsg("", WebStatusCodes::_400,
+				WebMsgTypes::_STATUS);
 	} catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 	}
@@ -86,8 +91,6 @@ void fsm::run() {
 	//starts mqtt thread
 	std::thread mqttthread = mqtt.mqttThread();
 
-	// connect (før statemachine)
-
 	// ready state
 	while (1) {
 		switch (nextState) {
@@ -96,33 +99,40 @@ void fsm::run() {
 				nextState = ready;
 			}
 			break;
+
 		case ready:
-			//magicsk
 			if (messRecviedFlag) {
 				nextState = busy;
 			}
 			break;
+
 		case busy:
 			messRecviedFlag = false;
-
-			//
+			this->startTest();
 			break;
+
 		default:
+			cout<< "something went wrong"<<endl;
 			break;
 		}
 	}
-	// busy state (test, send data)
-	// dc state ( er denne nødvendig)
 }
 
 void fsm::startTest() {
 
 	try {
 		if (sucPayload.getMsgType() == WebCommands::_RUN) {
-			Testcase test(sucPayload.getTestConfig().getSensorID()); // NJM fix dis
-			test.startTestcase();
+			Testcase test(sucPayload.getTestConfig().getSensorID(),
+					sucPayload.getTestConfig().getSensorType(),
+					sucPayload.getTestConfig().getStartFrequency(),
+					sucPayload.getTestConfig().getStopFrequency(),
+					sucPayload.getTestConfig().getStepFrequency(),
+					sucPayload.getTestConfig().getStepTimeMs()); // initalize test class
+			if((returncode == test.startTestcase()) != 0) {
+				throw(returncode);
+			}
 
-			sucPayload.addDataPoints(); // tilføj datapoints her
+			sucPayload.addDataPoints(test.getDataPoints(),sizeof(test.getDataPoints())); // tilføj datapoints her
 			sucPayload.setStatusCode(WebStatusCodes::_200);
 			sucPayload.setMsgType(WebMsgTypes::_DATA);
 			std::string dataStr = Jsonhandler.payloadJsonMsg(sucPayload);
@@ -134,5 +144,10 @@ void fsm::startTest() {
 		//std::cout << je.getErrorNumber() << " " << je.what() << std::endl;
 	} catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
+	}
+	catch (int &errorTC)
+	{
+		cout << "Something went wrong, contact support, error code is:"
+				<<errorTC<<endl;
 	}
 }

@@ -12,58 +12,40 @@
 
 Testcase::Testcase ( )
 {
-	// TODO Auto-generated constructor stub
-	this->sensorid = -1;
-	this->samplefrequency = -1;
-	this->steps = -1;
-	this->stepsize = -1;
-	this->start = -1;
-	this->stop = -1;
-	this->steptimems = -1;
-	this->testtype = -1;
+
+	this->sensorID = -1;
+	this->sensorType = -1;
+	this->startFrequency = -1;
+	this->stopFrequency = -1;
+	this->stepFrequency = -1;
+	this->stepTimeMs = -1;
 
 }
 
 Testcase::~Testcase ( )
 {
-	// TODO Auto-generated destructor stub
+
 }
 
-Testcase::Testcase (int sensorid_,
-                    int steps_,
-                    int stepsize_,
-                    int samplefrequency_,
-                    int start_,
-                    int stop_,
-                    int steptimems_,
-                    int testtype_)
+Testcase::Testcase (int sensorID_,
+					int sensorType_,
+                    int startFrequency_,
+                    int stopFrequency_,
+                    int stepFrequency_,
+                    int stepTimeMs_)
 {
-	this->sensorid = sensorid_;
-	this->samplefrequency = samplefrequency_;
-	this->steps = steps_;
-	this->stepsize = stepsize_;
-	this->start = start_;
-	this->stop = -stop_;
-	this->steptimems = steptimems_;
-	this->testtype = testtype_;
+	this->sensorID = sensorID_;
+	this->sensorType = sensorType_;
+	this->startFrequency = startFrequency_;
+	this->stopFrequency = stopFrequency_;
+	this->stepFrequency = stepFrequency_;
+	this->stepTimeMs = stepTimeMs_;
 }
 
 int Testcase::startTestcase ( )
 {
 	int code;
-	//calls all the private functions in testcase
-	//returns 1 on succes annd -100 on fail
-	/*
-	 * 1. 	first it calls isensor and sets up the sensor, returns -101 on fail to setup
-	 * 2. 	then it initalises PWM and sets frequency if fail returns -201 OR
-	 * 2.1 	PWM sets up start,stop, steps and steptimems if fail returns -202 OR
-	 * 2.2  PWM sets up steps,stepsize and steptimems, if fail returns -203
-	 * 3.		PWM start test on fail returns -204
-	 * 4.		ISensor start test on fail returns -102
-	 * 5.	  PWM stop test on fail return -205
-	 * 			retrun -1000 is if not implemeted.
-	 */
-	if (sensorid == adxl345i2c)	//ADXL345 I2C
+	if (sensorID == adxl345 && sensorType == i2c)	//ADXL345 I2C
 	{
 		I2C i2c (BUSADXL345, ADXL345I2C);
 		ADXL345 adxl345 (&i2c);
@@ -75,19 +57,19 @@ int Testcase::startTestcase ( )
 		}
 		if (!pwm.startPWM ())
 		{
-			return -204;
+			return TestStatusCodes::_514;
 		}
-		if (adxl345.ReadSensorState (SAMPLES_I2C_ADXL) != 0)
+		if (adxl345.ReadSensorState (this->dataP,SAMPLES_I2C_ADXL) != 0)
 		{
-			return -102;
+			return TestStatusCodes::_520;
 		}
 		if (!pwm.stopPWM ())
 		{
-			return -205;
+			return TestStatusCodes::_515;
 		}
 
 	}
-	else if (sensorid == adxl345spi) 	//ADXL345 SPI
+	else if (sensorID == adxl345 && sensorType == spi) 	//ADXL345 SPI
 	{
 		SPI spi (BUSADXL345, ADXL345SPI);
 		ADXL345 adxl345 (&spi);	//default bandwith is 1600 Hz
@@ -99,19 +81,19 @@ int Testcase::startTestcase ( )
 		}
 		if (!pwm.startPWM ())
 		{
-			return -204;
+			return TestStatusCodes::_514;
 		}
-		if (adxl345.ReadSensorState (SAMPLES_SPI_ADXL) != 0)
+		if (adxl345.ReadSensorState (this->dataP,SAMPLES_SPI_ADXL) != 0)
 		{
-			return -102;
+			return TestStatusCodes::_520;
 		}
 		if (!pwm.stopPWM ())
 		{
-			return -205;
+			return TestStatusCodes::_515;
 		}
 
 	}
-	else if (sensorid == kx224i2c)		//KX224 I2C
+	else if (sensorID == kx224 && sensorType == i2c)		//KX224 I2C
 	{
 		I2C i2c (BUSKX224, KX224I2C);
 		KX224 kx224 (&i2c);
@@ -123,19 +105,19 @@ int Testcase::startTestcase ( )
 		}
 		if (!pwm.startPWM ())
 		{
-			return -204;
+			return TestStatusCodes::_514;
 		}
-		if (kx224.ReadSensorState (SAMPLES_I2C_KX224) != 0)
+		if (kx224.ReadSensorState (this->dataP,SAMPLES_I2C_KX224) != 0)
 		{
-			return -102;
+			return TestStatusCodes::_520;
 		}
 		if (!pwm.stopPWM ())
 		{
-			return -205;
+			return TestStatusCodes::_515;
 		}
 
 	}
-	else if (sensorid == kx224spi)		//KX224 SPI
+	else if (sensorID == kx224 && sensorType == spi)		//KX224 SPI
 	{
 		return -1000; // not implemented (spi not connected on dev-board)
 		SPI spi (BUSKX224, KX224SPI);
@@ -147,16 +129,20 @@ int Testcase::startTestcase ( )
 		}
 		if (!pwm.startPWM ())
 		{
-			return -204;
+			return TestStatusCodes::_514;
 		}
-		if (kx224.ReadSensorState (SAMPLES_SPI_KX224) != 0)
+		if (kx224.ReadSensorState (this->dataP,SAMPLES_SPI_KX224) != 0)
 		{
-			return -102;
+			return TestStatusCodes::_520;
 		}
 		if (!pwm.stopPWM ())
 		{
-			return -205;
+			return TestStatusCodes::_515;
 		}
+	}
+	else
+	{
+		return -404; //sensor not found;
 	}
 
 	return 0;
@@ -166,18 +152,22 @@ int Testcase::initpwm (PWM pwm)
 {
 	if (!pwm.init ())
 	{
-		return -201;
+		return TestStatusCodes::_511;
 	}
-	if (testtype == ONEFREQ)
+	if (this->stopFrequency == ONEFREQ)
 	{
-		pwm.setup (samplefrequency, DUTY);
+		pwm.setup (startFrequency, DUTY);
 	}
-	else if (testtype == SWEEP)
+	else if (this->stopFrequency  != ONEFREQ)
 	{
-		return -1000; // not implemented yet
-		pwm.runSweep (start, stop, stepsize);
+		return TestStatusCodes::_555; // not implemented yet
+		pwm.runSweep (startFrequency, stopFrequency, stepFrequency);
+	}
+	else {
+		return TestStatusCodes::_512; //wrong setup
 	}
 
 	return 0;
 }
+
 

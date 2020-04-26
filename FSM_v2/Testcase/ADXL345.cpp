@@ -171,7 +171,7 @@ int ADXL345::ReadSensorStateToFile(int samples) {
 		this->accelZ = this->combineRegisters(*(registers + DATAZ1), *(registers + DATAZ0));
 		//this->resolution = (ADXL345::RESOLUTION) (((*(registers + DATA_FORMAT)) & 0x08) >> 3);
 		//this->range = (ADXL345::RANGE) ((*(registers + DATA_FORMAT)) & 0x03);
-		*/
+
 		if (WriteDataToFile(this->accelX, this->accelY, this->accelZ)) {
 			perror("ADXL345: Failed write X, Y & Z to file");
 			return -1;
@@ -193,7 +193,7 @@ int ADXL345::ReadSensorStateToFile(int samples) {
  * @param samples number of readings
  * @return -1 on failure and 1 on success
  */
-int ReadSensorState(dataPoint * data, int samples) {
+int ADXL345::ReadSensorState(dataPoint * data, int samples) {
     for (int i = 0; i < samples;i++) {
         this->registers = this->busType->readRegisters(BUFFER_SIZE, DATAX0);
         if (*this->registers != 0xe5) {
@@ -215,6 +215,7 @@ int ReadSensorState(dataPoint * data, int samples) {
             memcpy(olddata,registers+DATAX0,DATALEN);
         }
     }
+    return 0;
 }
 
 /**

@@ -41,6 +41,7 @@ private:
     bool subFlag;
     bool messRecviedFlag;
     bool publishSucc;
+    int returncode;
 
     mqttPayload sucPayload;
 
