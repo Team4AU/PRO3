@@ -34,13 +34,15 @@ private:
     enum states{
     	connect,
 		ready,
-		busy
+		busy,
+		done
     };
     states nextState;
     bool connectedFlag;
     bool subFlag;
     bool messRecviedFlag;
     bool publishSucc;
+    bool doneflag;
     int returncode;
 
     mqttPayload sucPayload;

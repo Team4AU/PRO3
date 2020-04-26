@@ -7,9 +7,6 @@
 
 #include "fsm.h"
 
-/*const char * id, const char * host, int port, const char * subscribeTopic,
- const char * publishTopic, bool cleanSession */
-
 #define HOST ""
 #define PORT 1883
 #define SUBTOP ""
@@ -27,17 +24,16 @@ fsm::fsm() :
 }
 
 fsm::~fsm() {
-	// TODO Auto-generated destructor stub
+
 }
 
-// sæt flag og put besked i log (start state)
-// skal kunne sende status tilbage også
+/*
+ *  @breif on message if not busy goes to next state
+ */
 void fsm::onMessage(std::string message) {
-	std::cout << message << std::endl;
-	// hvis state er busy send busy tilbage til server
-	// hvis state er ready send ok tilbage (202)
+	&&std::cout << message << std::endl;
 	try {
-		if (busy != busy) {
+		if (nextState != busy) {
 
 			sucPayload = Jsonhandler.toMqttMessage(message);
 			Jsonhandler.acknowledgeJsonMsg(sucPayload.getSentBy(),
@@ -57,32 +53,39 @@ void fsm::onMessage(std::string message) {
 	}
 }
 
-// sæt flag istedet for besked ( ready state 2 )
+/*
+ * @breif on subscribe sets subscribe flag
+ */
 void fsm::onSubscribe() {
-	std::cout << "subscribed" << std::endl;
+	// std::cout << "subscribed" << std::endl;
 	this->subFlag = true;
-	// log? hvis onmessage ok, sæt flag gå ind i statemachine
 }
-// sæt flag istedet for besked ( ready state 1)
+
+/*
+ * @breif on connect sets connect flag
+ */
 void fsm::onConnect(int rc) {
-	std::cout << "connect status: " << rc << std::endl;
+	//std::cout << "connect status: " << rc << std::endl;
 	if (rc)	// tjek rc returværdi
 	{
 		this->connectedFlag = true;
 	}
 }
-// sæt flag istedet for besked ( sleep state)
-// stop eller reconnect,
+/*
+ * @breif on disconnect, sets flags to false and goes to connect state
+ */
 void fsm::onDisconnect() {
-	std::cout << "disconnected" << std::endl;
+	// std::cout << "disconnected" << std::endl;
 	this->connectedFlag = false;
 	this->subFlag = false;
 	nextState = connect;
 }
-// sæt flag istedet for besked (done state)
-// sender data, aknwo og status?
+
+/*
+ * @breif on publish do something?
+ */
 void fsm::onPublish(int rc) {
-	std::cout << "publish status: " << rc << std::endl;
+	//std::cout << "publish status: " << rc << std::endl;
 }
 
 void fsm::run() {
@@ -111,6 +114,10 @@ void fsm::run() {
 			this->startTest();
 			break;
 
+		case done:
+			nextState = ready;
+			break;
+
 		default:
 			cout<< "something went wrong"<<endl;
 			break;
@@ -118,6 +125,9 @@ void fsm::run() {
 	}
 }
 
+/*
+ * @breif starts testcase and publishes message
+ */
 void fsm::startTest() {
 
 	try {
@@ -137,7 +147,7 @@ void fsm::startTest() {
 			sucPayload.setMsgType(WebMsgTypes::_DATA);
 			std::string dataStr = Jsonhandler.payloadJsonMsg(sucPayload);
 			mqtt.publish(dataStr.c_str());
-			nextState = ready;
+			nextState = done;
 
 		}
 	} catch (jsonValidationException &je) {
