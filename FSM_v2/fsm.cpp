@@ -31,7 +31,7 @@ fsm::~fsm() {
  *  @breif on message if not busy goes to next state
  */
 void fsm::onMessage(std::string message) {
-	&&std::cout << message << std::endl;
+	//std::cout << message << std::endl;
 	try {
 		if (nextState != busy) {
 
