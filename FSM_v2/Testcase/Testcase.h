@@ -64,16 +64,13 @@ private:
 	};
 
 	//variables from testconfig
-	int sensorID;						//from testconfig to ISensor/Bus
-	int sensorType;
-	int startFrequency;
+	int sensorID;		//from testconfig to ISensor/Bus
+	int sensorType;		//from testconfig to ISensor/Bus
+	int startFrequency;	//from testconfig to PWM
 	int stopFrequency;	//from testconfig to PWM
-	int stepFrequency;  				//from testconfig to PWM
-	int stepTimeMs;						//from testconfig to PWM
+	int stepFrequency;  	//from testconfig to PWM
+	int stepTimeMs;		//from testconfig to PWM
 
-	//sensorid is used to choose sensor and bustype.
-	//samples in ADXL345/KX224 (implement in Isensor instead?) is set by samplefrequency or (start,stop,steps,stepsize)
-	//there are 2 combinations of sweep test? (steps,start,stop,steptimems) and (steps,stepsize,steptimems)
 	dataPoint *dataP;
 
 	//functions
